@@ -27,6 +27,15 @@ namespace WebApiRest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", p =>
+                {
+                    p.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
             services.AddDbContext<Context.AppContext>(options => options.UseSqlite(Configuration.GetConnectionString("ConnectionString")));
             services.AddControllers();
         }
@@ -44,6 +53,8 @@ namespace WebApiRest
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors("AllowAll");
 
             app.UseEndpoints(endpoints =>
             {
